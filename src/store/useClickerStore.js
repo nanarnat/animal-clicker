@@ -2,18 +2,36 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 export const useClickerStore = create(
-    persist(
-        (set) => ({
-            click : 0,
-            power: 1,
+  persist(
+    (set) => ({
+      count: 0,
+      power: 1,
 
-            clickButton: ()=>(
-                set(state => ({
-    click: state.click + state.power,
-  })))
+      clickButton: () =>
+        set((state) => ({
+          count: state.count + state.power,
+        })),
 
-        }),
-        {
-      name: "clicker-store", 
-    }
-    ));
+      upgradePowerPlus: (num) =>
+        set((state) => ({
+          power: state.power + num,
+        })),
+
+      upgradePowerMultiply: (num) =>
+        set((state) => ({
+          power: state.power * num,
+        })),
+
+      shop: (cost) => 
+        set((state) => {
+          if (state.count >= cost) {
+            return {count: state.count - cost}
+          }
+          return state
+        }),  
+    }),
+    {
+      name: "clicker-store",
+    },
+  ),
+);
